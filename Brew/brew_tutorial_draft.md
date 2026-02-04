@@ -30,15 +30,15 @@ Abrir o ficheiro install.sh e alterar para usar o ssh em vez de https
 guardar e correr
 
 Substituir
-https://github.com/Homebrew/brew.git
+https://github.com/Homebrew/brew
 por
-git@github.com:Homebrew/brew.git
+git@github.com:Homebrew/brew
 
 e 
 
-https://github.com/Homebrew/homebrew-core.git
+https://github.com/Homebrew/homebrew-core
 por
-git@github.com:Homebrew/homebrew-core.git
+git@github.com:Homebrew/homebrew-core
 
 ```
 ./install.sh

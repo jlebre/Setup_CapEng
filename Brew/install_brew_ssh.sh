@@ -27,8 +27,8 @@ cd ~/.homebrew
 
 # 3. Alterar HTTPS para SSH usando SED
 echo "🛠️  Modificando URLs no install.sh..."
-sed -i 's|https://github.com/Homebrew/brew.git|git@github.com:Homebrew/brew.git|g' install.sh
-sed -i 's|https://github.com/Homebrew/homebrew-core.git|git@github.com:Homebrew/homebrew-core.git|g' install.sh
+sed -i 's|https://github.com/Homebrew/brew|git@github.com:Homebrew/brew|g' install.sh
+sed -i 's|https://github.com/Homebrew/homebrew-core|git@github.com:Homebrew/homebrew-core|g' install.sh
 
 # 4. Executar o instalador modificado
 echo "🍺 Executando o instalador do Homebrew..."

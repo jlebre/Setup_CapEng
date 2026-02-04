@@ -44,10 +44,10 @@ cd ~/.homebrew
 
 2. **Editar o script de instalação:**
 Abre o ficheiro `install.sh` (podes usar o VS Code com `code .`) e substitui os seguintes URLs:
-* **Procurar:** `https://github.com/Homebrew/brew.git`
-* **Substituir por:** `git@github.com:Homebrew/brew.git`
-* **Procurar:** `https://github.com/Homebrew/homebrew-core.git`
-* **Substituir por:** `git@github.com:Homebrew/homebrew-core.git`
+* **Procurar:** `https://github.com/Homebrew/brew`
+* **Substituir por:** `git@github.com:Homebrew/brew`
+* **Procurar:** `https://github.com/Homebrew/homebrew-core`
+* **Substituir por:** `git@github.com:Homebrew/homebrew-core`
 
 
 3. **Executar o instalador:**
