@@ -4,45 +4,58 @@
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
+RED='\033[0;31m'
 NC='\033[0m'
 
-set -e # Interrompe o script se houver erro
+# Configuração para ignorar SSL se estiver em rede corporativa restrita
+# Descomente a linha abaixo se os erros de certificado persistirem
+# export HOMEBREW_CURL_RC=1 && echo "insecure" > ~/.curlrc
+
+set -e 
 
 echo -e "${BLUE}======================================================"
-echo -e "🐳 Setup: Docker, Kubernetes & Gestão (via Brew)"
+echo -e "🐳 Setup Corrigido: Docker & K8s (Ubuntu Noble)"
 echo -e "======================================================${NC}"
 
-# 1. Dependências do Sistema (Ubuntu)
-echo -e "\n${YELLOW}[1/4] Instalando Docker Engine via APT...${NC}"
-sudo apt-get update
+# 1. Limpeza de Repositórios Mortos (Correção do Erro 404/SSL)
+echo -e "\n${YELLOW}[1/5] Limpando fontes de pacotes antigas...${NC}"
+# Remove o repositório do Kubernetes que está dando erro 404/SSL
+sudo rm -f /etc/apt/sources.list.d/kubernetes.list
+sudo rm -f /etc/apt/sources.list.d/archive_uri-https_apt_kubernetes_io-noble.list
+
+# 2. Dependências do Sistema (Ubuntu)
+echo -e "\n${YELLOW}[2/5] Instalando Docker Engine (Servidor)...${NC}"
+# Usamos o docker.io do repositório oficial do Ubuntu para evitar conflitos de GPG externos em rede corporativa
+sudo apt-get update -y || echo -e "${RED}Aviso: Alguns repositórios falharam, mas continuando...${NC}"
 sudo apt-get install -y build-essential docker.io
 
-# Configura permissões para o Docker (evita usar sudo sempre)
-sudo usermod -aG docker $USER
+# Configura permissões para o Docker
+sudo usermod -aG docker $USER || true
 
-# 2. Ferramentas via Homebrew
-echo -e "\n${YELLOW}[2/4] Instalando binários via Homebrew...${NC}"
-brew install docker docker-compose
+# 3. Ferramentas via Homebrew (Apenas Clientes e Gestão)
+echo -e "\n${YELLOW}[3/5] Instalando binários via Homebrew...${NC}"
+# Nota: Não instalamos 'docker' via brew no Linux para não conflitar com o docker.io do apt
+brew install docker-compose
 brew install kubernetes-cli helm
 
-# 3. Cluster Local e Interface
-echo -e "\n${YELLOW}[3/4] Instalando Minikube e K9s...${NC}"
+# 4. Cluster Local e Interface
+echo -e "\n${YELLOW}[4/5] Instalando Minikube e K9s...${NC}"
 brew install minikube
-brew install derailed/k9s/k9s
+brew install k9s
 
-# 4. Verificação Final
+# 5. Verificação Final
 echo -e "\n${BLUE}======================================================"
 echo -e "✅ Verificação de Versões:"
 echo -e "------------------------------------------------------"
-echo -e "Docker CLI:  $(docker -v)"
-echo -e "Kubectl:     $(kubectl version --client --short 2>/dev/null || echo 'Instalado')"
-echo -e "Helm:        $(helm version --short)"
-echo -e "Minikube:    $(minikube version --short)"
-echo -e "K9s:         $(k9s version | grep 'Version' | awk '{print $2}' || echo 'Instalado')"
+docker -v
+kubectl version --client 2>/dev/null | head -n 1
+helm version --short
+minikube version --short
+k9s version | grep 'Version' || echo "K9s instalado"
 echo -e "======================================================${NC}"
 
 echo -e "${GREEN}🚀 Instalação terminada com sucesso!${NC}"
-echo -e "\n${YELLOW}⚠️  PRÓXIMOS PASSOS:${NC}"
-echo -e "1. ${BLUE}Reinicia a tua sessão${NC} (Logout/Login) para as permissões do Docker funcionarem."
-echo -e "2. Inicia o Kubernetes com: ${BLUE}minikube start${NC}"
-echo -e "3. Abre a interface de gestão com: ${BLUE}k9s${NC}"
+echo -e "\n${YELLOW}⚠️  NOTAS IMPORTANTES:${NC}"
+echo -e "1. ${BLUE}PERMISSÕES:${NC} Execute 'newgrp docker' ou reinicie a sessão para usar docker sem sudo."
+echo -e "2. ${BLUE}SSL/CERTIFICADOS:${NC} Se o Brew falhar, use 'export HOMEBREW_CURL_RC=1' temporariamente."
+echo -e "3. ${BLUE}MINIKUBE:${NC} Inicie com 'minikube start --driver=docker'"

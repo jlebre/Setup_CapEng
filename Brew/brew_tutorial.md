@@ -104,6 +104,8 @@ brew install kubernetes-cli
 
 ---
 
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.zshrc
+
 
 02 fev 2026
 José Maria Lebre
